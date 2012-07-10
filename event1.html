@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>1. 복권 이벤트</title>
+		
+		<style type="text/css">
+			body {background:#000}
+			#_img_block, #_canvas_block {position:absolute;top:50%;left:50%;margin:-100px 0 0 -150px;z-index:0;}
+			#_canvas_block {z-index: 1}			
+		</style>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/latest/jquery.mobile.js"></script>
+	</head>
+	<body>
+		<div id="_img_block">
+			<img id="_img" src="ice_cream_flavors.jpg" width="300" height="200">
+		</div>
+		<div id="_canvas_block">
+			<canvas id="_canvas" width="300" height="200"></canvas>
+		</div>
+		<div id=tmp></div>
+		<script type="text/javascript">
+			var	elCanvas = document.getElementById('_canvas');
+			var oCtx = elCanvas.getContext('2d');
+			oCtx.fillStyle = 'rgb(255,255,255)';
+			oCtx.fillRect(0, 0, elCanvas.width, elCanvas.height);
+			
+			var bMouseDownedInCanvas = false;
+			var welCanvas = $(elCanvas);
+			var bEventFinish = false;
+			
+			welCanvas.bind('vmousedown', function(e){
+				//console.log('vmousedown');
+				bMouseDownedInCanvas = true;
+				oCtx.globalCompositeOperation = 'destination-out';				
+				
+					var htOffset = welCanvas.offset();
+					var nX = e.pageX - htOffset.left;
+					var nY = e.pageY - htOffset.top;
+
+				oCtx.lineJoin = 'round';
+				oCtx.lineCap = 'round';								
+				oCtx.beginPath();
+				oCtx.lineWidth = 30;
+				oCtx.moveTo(nX, nY);
+			});
+			welCanvas.bind('vmousemove', function(e){
+				e.preventDefault();
+				if(bMouseDownedInCanvas){
+				
+					var htOffset = welCanvas.offset();
+					var nX = e.pageX - htOffset.left;
+					var nY = e.pageY - htOffset.top;
+									
+					oCtx.lineTo(nX, nY);
+					oCtx.stroke();
+				}
+			});
+			welCanvas.bind('vmouseup', function(e){
+				console.log('vmouseup');
+				bMouseDownedInCanvas = false;
+				
+				if(!bEventFinish){
+					var nHits = 0; 
+					var nPixels = elCanvas.width * elCanvas.height;
+					var htImageData = oCtx.getImageData(0, 0, elCanvas.width, elCanvas.height); 
+	 
+					for(var i = 0, nLength = htImageData.data.length; i < nLength; i = i + 4) {
+						if(htImageData.data[i] == 0 && htImageData.data[i + 1] == 0 && htImageData.data[i + 2] == 0 && htImageData.data[i + 3] == 0){
+					    	nHits++;
+					   	} 
+					}
+					
+					var nPercentage = (nHits / nPixels) * 100;
+	
+					if(nPercentage >= 70){
+						bEventFinish = true;
+						if(Math.floor(Math.random()*10) > 5){
+							alert('당첨');
+						}else{
+							alert('꽝');
+						}						
+					}				
+				}
+
+			});
+		</script>		
+	</body>
+</html>

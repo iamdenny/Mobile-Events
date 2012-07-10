@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>2. 물주기 이벤트</title>
+		
+		<style type="text/css">
+			#_cloud {position:absolute;top:50%;left:50%;width:400px;height:150px;margin:-175px 0 0 -200px;background:url(cloud.png) 0 0 no-repeat;z-index:1}
+			#_flower {position:absolute;top:50%;left:50%;width:175px;height:388px;margin:-70px 0 0 -87px;background:url(flower1.png) 0 0 no-repeat;z-index:0}
+			#_flower._mid {background:url(flower2.png) 0 0 no-repeat;margin-top:-60px}
+			#_flower._final {background:url(flower3.png) 0 0 no-repeat;margin-top:-30px}
+			
+			@-webkit-keyframes raining {
+				from {
+					background:url(rain.png) 0 0 no-repeat;					
+					opacity : 0;
+					top:0;
+				}
+				to {
+					background:url(rain.png) 0 0 no-repeat;
+					opacity : 1;
+					top:100%;
+				}
+			}
+			
+			#_rain {position:absolute;top:50%;left:50%;width:300px;height:200px;margin:-100px 0 0 -150px;z-index:3}
+			#_rain img{-webkit-animation-play-state:paused;display:none;-webkit-animation-name:raining;-webkit-animation-duration:0.9s;-webkit-animation-timing-function:ease-in;-webkit-animation-iteration-count:infinite;position:absolute;top:0;left:50%;}			
+			#_rain img._rain_1 {left:0%;-webkit-animation-delay:0.3s}
+			#_rain img._rain_2 {left:20%;-webkit-animation-delay:0.1s}
+			#_rain img._rain_3 {left:45%;-webkit-animation-delay:0s}
+			#_rain img._rain_4 {left:70%;-webkit-animation-delay:0.25s}
+			#_rain img._rain_5 {left:90%;-webkit-animation-delay:0.35s}
+			#_rain img._rain_6 {left:50%;-webkit-animation-delay:0.2s}
+			#_rain img._rain_7 {left:75%;-webkit-animation-delay:0.05s}
+			#_rain img._rain_8 {left:25%;-webkit-animation-delay:0.27s}
+			#_rain._running_0 img {-webkit-animation-play-state:running;display:block;}
+			#_rain._running_1 img {-webkit-animation-play-state:running;display:block;-webkit-animation-duration:0.7s}
+			#_rain._running_2 img {-webkit-animation-play-state:running;display:block;-webkit-animation-duration:0.5s}
+			#_rain._running_3 img {-webkit-animation-play-state:running;display:block;-webkit-animation-duration:0.2s}
+			
+			
+		</style>
+		
+		<script type="text/javascript" src="extensions/jindo/jindo.all.ns.js"></script>
+		<script type="text/javascript" src="extensions/jindo/jindo.Component.js"></script>
+		<script type="text/javascript" src="extensions/jindo/jindo.UIComponent.js"></script>
+		<script type="text/javascript" src="extensions/jindo/jindo.m.js"></script>
+		<script type="text/javascript" src="extensions/jindo/jindo.m.Touch.js"></script>
+		<script type="text/javascript" src="js/ntstouch.js"></script>
+	</head>
+	<body>
+		
+		<div id="_cloud">
+			
+		</div>
+		<div id="_rain">
+			<img class="_rain_1" src="rain.png">
+			<img class="_rain_2" src="rain.png">
+			<img class="_rain_3" src="rain.png">
+			<img class="_rain_4" src="rain.png">
+			<img class="_rain_5" src="rain.png">
+			<img class="_rain_6" src="rain.png">
+			<img class="_rain_7" src="rain.png">
+			<img class="_rain_8" src="rain.png">
+		</div>
+		<div id="_flower">
+			
+		</div>
+		<script type="text/javascript">
+		
+			var elBody = document.body;
+
+			//scroll을 막기 위한 코드 추가
+			var sEvtName = 'touchmove';
+			var htInfo = jindo.m.getDeviceInfo();
+			//andriod 2.1 bug fix
+			if(htInfo.android && htInfo.version == '2.1'){
+				sEvtName = 'touchstart';
+			}
+			jindo.$Fn(function(evt){
+				evt.$value().preventDefault();
+			},this).attach(jindo.$('_rain'),sEvtName);
+			//scroll을 막기 위한 코드 추가 끝
+
+
+			var oTouch = new NtsTouch('_rain', {
+				nSlopeThreshold : 30,
+				nMomentumDuration : 300,
+				nMoveThreshold : 70
+			});
+			
+			var aStep = [10, 20, 40, 50, 60];
+			var nCurrentStep = 0;
+			var nScrollUpDownCount = 0;
+			var woRain = jindo.$Element('_rain');
+			var woFlower = jindo.$Element('_flower');
+			
+			oTouch.attach({
+				'touchStart' : function(oCustomEvent){
+					console.log('touchstart');
+				},
+				'touchMove' : function(oCustomEvent){
+					nScrollUpDownCount += 1;
+					if(nCurrentStep < aStep.length && nScrollUpDownCount >= aStep[nCurrentStep]){
+						console.log('nCurrentStep : ' + nCurrentStep + ', nScrollUpDownCount : ' + nScrollUpDownCount);
+						
+						if(nCurrentStep < 4){
+							woRain.className('_running_' + nCurrentStep);	
+						}else{
+							woRain.className('');
+						}
+						
+						if(nCurrentStep == 2){
+							woFlower.className('_mid');
+						}else if(nCurrentStep == 4){
+							woFlower.className('_final');
+						}
+						nCurrentStep += 1;						
+					}
+				},
+				'touchEnd' : function(oCustomEvent){
+					woRain.className('');						
+				}				
+			});
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>1. 복권 이벤트</title>
+		
+		<style type="text/css">
+			body {background:#000}
+			#_img_block, #_canvas_block {position:absolute;top:50%;left:50%;margin:-100px 0 0 -150px;z-index:0;}
+			#_canvas_block {z-index: 1}			
+		</style>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/latest/jquery.mobile.js"></script>
+	</head>
+	<body>
+		<div id="_img_block">
+			<img id="_img" src="ice_cream_flavors.jpg" width="300" height="200">
+		</div>
+		<div id="_canvas_block">
+			<canvas id="_canvas" width="300" height="200"></canvas>
+		</div>
+		<div id=tmp></div>
+		<script type="text/javascript">
+			var	elCanvas = document.getElementById('_canvas');
+			var oCtx = elCanvas.getContext('2d');
+			//oCtx.globalCompositeOperation = 'destination-out';
+			// var aImageData = [];
+// 			
+			// var elImg = new Image();
+			// elImg.src = 'ice_cream_flavors.jpg';
+			// elImg.onload = function(){
+				// oCtx.drawImage(elImg, 0, 0, 534, 700, 0, 0, 300, 100);
+// 				
+				// //aImageData = oCtx.getImageData(0, 0, elCanvas.width, elCanvas.height)
+				// removeByCircle(150, 50, 10);
+			// };
+			oCtx.fillStyle = 'rgb(255,255,255)';
+			oCtx.fillRect(0,0,elCanvas.width,elCanvas.height);
+			
+			// function removeByCircle(nX, nY, nRadius){
+				// for(var i=0; i<elCanvas.width; i++){
+					// for(var j=0; j<elCanvas.height; j++){
+						// var bResult = isThesePositionInCircle(nX, nY, i, j, nRadius);
+						// if(bResult){
+							// //console.log('i : ' + i + ', j : ' + j + ' is in circle : ' + bResult);
+							// oCtx.clearRect(i, j, 1, 1);
+						// }
+					// }
+				// }
+// 				
+			// }
+// 			
+			// function isThesePositionInCircle(nCircleX, nCircleY, nTargetX, nTargetY, nRadius){
+				// var bResult = false;
+				// if(nRadius >= Math.sqrt(Math.pow(nCircleX - nTargetX, 2) + Math.pow(nCircleY - nTargetY, 2))){
+					// bResult = true;
+				// }	
+				// return bResult;
+			// }
+			
+			var bMouseDownedInCanvas = false;
+			var welCanvas = $("#_canvas");
+			
+			welCanvas.bind('vmousedown', function(e){
+				//console.log('vmousedown');
+				bMouseDownedInCanvas = true;
+				oCtx.globalCompositeOperation = 'destination-out';				
+				
+					var htOffset = welCanvas.offset();
+					var nX = e.pageX - htOffset.left;
+					var nY = e.pageY - htOffset.top;
+
+				oCtx.lineJoin = 'round';
+				oCtx.lineCap = 'round';								
+				oCtx.beginPath();
+				oCtx.lineWidth = 30;
+				oCtx.moveTo(nX, nY);
+				//console.log('vmousedown : ' + bMouseDownedInCanvas);
+			});
+			welCanvas.bind('vmousemove', function(e){
+				e.preventDefault();
+				//console.log('vmousemove : ' + bMouseDownedInCanvas);
+				if(bMouseDownedInCanvas){
+					// var htOffset = welCanvas.offset();
+					// var nX = e.pageX - htOffset.left;
+					// var nY = e.pageY - htOffset.top;
+					
+					//removeByCircle(nX, nY, 30);
+				
+					var htOffset = welCanvas.offset();
+					var nX = e.pageX - htOffset.left;
+					var nY = e.pageY - htOffset.top;
+									
+					oCtx.lineTo(nX, nY);
+					oCtx.stroke();
+				}
+			});
+			welCanvas.bind('vmouseup', function(e){
+				console.log('vmouseup');
+				bMouseDownedInCanvas = false;
+			});
+			welCanvas.bind('vmousecancel', function(e){
+				console.log('vmousecancel');
+				//bMouseDownedInCanvas = false;
+			});
+			// window.addEventListener("touchstart", function(ev){
+			    // console.log('touchstart'); // good
+			// });
+			// window.addEventListener("touchmove", function(ev){
+			    // console.log('touchmove'); // good
+			// });
+			// window.addEventListener("touchend", function(ev){
+			    // console.log('touchend'); // good
+			// });
+			
+			// welCanvas.mousedown(function(e){
+				// console.log('mousedown');
+				// bMouseDownedInCanvas = true;
+				// console.log(e);
+			// }).mousemove(function(e){
+				// console.log('mousemove');
+				// if(bMouseDownedInCanvas){
+					// // console.log('e.offsetX : ' + e.offsetX + ', e.offsetY : ' + e.offsetY);
+					// removeByCircle(e.offsetX, e.offsetY, 10);
+				// }
+			// }).mouseup(function(e){
+				// console.log('mouseup');
+				// bMouseDownedInCanvas = false;
+			// }).mouseout(function(e){
+				// console.log('mouseout');
+				// bMouseDownedInCanvas = false;
+			// }).mouseover(function(e){
+				// console.log('mouseover');
+			// });
+// 			
+			// //oCtx.clearRect(0,0,elCanvas.width,elCanvas.height);
+// 			
+			// //oCtx.save();
+// 			
+			// oCtx.fillStyle = 'black';
+		    // oCtx.beginPath();
+		    // oCtx.arc(100, 100, 20, 0, Math.PI * 2, true);
+		    // oCtx.fill();
+		    // oCtx.clip();
+		    
+			 // function circle2(xx, yy, r) { //xx=원의중심x좌표, yy=원의중심y좌표, rr=원의반지름
+			  // var html_tmp = document.getElementById('tmp');
+// 			  
+			  // //점을 찍을 수 있는 객체 선언
+			  // var cPoint = "<font color='red'>";
+			  // for( i=0; i<Math.PI*2; i+=0.0174 ) {
+			  	// //console.log('i : ' + i);
+			   // //각도에 따른 원의 좌표 구하기(X축 또는 Y축이 0 도 일때 좌표구하는 공식)
+			   // a1 = xx + ( (Math.cos(i)) * r ); //x = 반지름 * sin쎄타
+			   // a2 = yy - ( (Math.sin(i)) * r ); //y = 반지금 * cos쎄타
+			   // //좌표에 점을 그리는 부분
+			   // //document.write("["+a1+":"+a2+"]<br>"); //원의 좌표를 알고싶으면 주석을 해제하라!!
+			   // cPoint += "<div style='position:absolute; left:"+a1+"px; top:"+a2+"px'>.</div>";
+			   // html_tmp.innerHTML = cPoint;
+			  // }
+			 // }
+// 
+			// circle2(200,200,150);
+
+		</script>		
+	</body>
+</html>
